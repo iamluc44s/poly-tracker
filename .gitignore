@@ -1,0 +1,19 @@
+# Ambiente virtual — não precisa subir, cada um cria o seu
+venv/
+
+# Logs — gerados automaticamente, não precisam subir
+logs/
+
+# Arquivo de segredos — NUNCA sobe para o GitHub
+.env
+
+# Arquivos temporários do Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Cache do pytest
+.pytest_cache/
+
+# Cache do VS Code
+.vscode/

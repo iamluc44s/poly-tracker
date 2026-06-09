@@ -1,0 +1,184 @@
+<!-- templates/leaderboard.html -->
+<!-- Este é o "visual" do nosso leaderboard -->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Polymarket Tracker</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #0d1117;
+            color: #e6edf3;
+            min-height: 100vh;
+        }
+
+        header {
+            background: #161b22;
+            padding: 20px 40px;
+            border-bottom: 1px solid #30363d;
+        }
+
+        header h1 {
+            font-size: 24px;
+            color: #58a6ff;
+        }
+
+        header p {
+            color: #8b949e;
+            font-size: 14px;
+            margin-top: 4px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .filtros {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+
+        .filtro-btn {
+            padding: 8px 16px;
+            border-radius: 20px;
+            border: 1px solid #30363d;
+            background: #161b22;
+            color: #e6edf3;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .filtro-btn:hover {
+            border-color: #58a6ff;
+            color: #58a6ff;
+        }
+
+        .filtro-btn.ativo {
+            background: #58a6ff;
+            color: #0d1117;
+            border-color: #58a6ff;
+            font-weight: bold;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead th {
+            padding: 12px 16px;
+            text-align: left;
+            font-size: 12px;
+            color: #8b949e;
+            text-transform: uppercase;
+            border-bottom: 1px solid #30363d;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid #21262d;
+            transition: background 0.15s;
+        }
+
+        tbody tr:hover {
+            background: #161b22;
+        }
+
+        tbody td {
+            padding: 14px 16px;
+            font-size: 14px;
+        }
+
+        .posicao {
+            color: #8b949e;
+            font-weight: bold;
+            width: 50px;
+        }
+
+        .nome {
+            font-weight: 600;
+            color: #58a6ff;
+        }
+
+        .lucro {
+            color: #3fb950;
+            font-weight: 600;
+        }
+
+        .volume {
+            color: #8b949e;
+        }
+
+        .total {
+            color: #8b949e;
+            font-size: 13px;
+            margin-bottom: 16px;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>🏆 Polymarket Tracker</h1>
+    <p>Leaderboard em tempo real com filtros por categoria</p>
+</header>
+
+<div class="container">
+
+    <!-- Filtros de categoria -->
+    <div class="filtros">
+        <a href="/" class="filtro-btn {% if not categoria_selecionada %}ativo{% endif %}">
+            Todos
+        </a>
+        {% for cat in categorias %}
+        <a href="/?categoria={{ cat }}"
+           class="filtro-btn {% if categoria_selecionada == cat %}ativo{% endif %}">
+            {{ cat }}
+        </a>
+        {% endfor %}
+    </div>
+
+    <!-- Total de traders -->
+    <p class="total">{{ traders|length }} traders encontrados</p>
+
+    <!-- Tabela do leaderboard -->
+    <table>
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Trader</th>
+                <th>Lucro Total</th>
+                <th>Volume</th>
+                <th>Twitter</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for trader in traders %}
+            <tr>
+                <td class="posicao">{{ trader.posicao }}</td>
+                <td class="nome">
+    <a href="/trader/{{ trader.carteira }}" style="color:#58a6ff; text-decoration:none;">
+        {{ trader.nome }}
+    </a>
+</td>
+                <td class="lucro">${{ "{:,.2f}".format(trader.lucro) }}</td>
+                <td class="volume">${{ "{:,.2f}".format(trader.volume) }}</td>
+                <td>{{ trader.twitter }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+
+</body>
+</html>

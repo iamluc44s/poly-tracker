@@ -1,0 +1,207 @@
+<!-- templates/trader.html -->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ trader.nome }} — Polymarket Tracker</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #0d1117;
+            color: #e6edf3;
+            min-height: 100vh;
+        }
+
+        header {
+            background: #161b22;
+            padding: 20px 40px;
+            border-bottom: 1px solid #30363d;
+        }
+
+        header a {
+            color: #58a6ff;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .perfil-card {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 10px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .perfil-card h2 {
+            font-size: 28px;
+            color: #58a6ff;
+            margin-bottom: 16px;
+        }
+
+        .metricas {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
+        .metrica {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .metrica-label {
+            font-size: 12px;
+            color: #8b949e;
+            text-transform: uppercase;
+        }
+
+        .metrica-valor {
+            font-size: 22px;
+            font-weight: bold;
+            color: #3fb950;
+        }
+
+        .metrica-valor.neutro {
+            color: #e6edf3;
+        }
+
+        h3 {
+            font-size: 16px;
+            color: #8b949e;
+            text-transform: uppercase;
+            margin-bottom: 16px;
+            letter-spacing: 1px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead th {
+            padding: 12px 16px;
+            text-align: left;
+            font-size: 12px;
+            color: #8b949e;
+            text-transform: uppercase;
+            border-bottom: 1px solid #30363d;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid #21262d;
+            transition: background 0.15s;
+        }
+
+        tbody tr:hover { background: #1c2128; }
+
+        tbody td {
+            padding: 14px 16px;
+            font-size: 14px;
+        }
+
+        .positivo { color: #3fb950; font-weight: 600; }
+        .negativo { color: #f85149; font-weight: 600; }
+
+        .tag {
+            background: #21262d;
+            border: 1px solid #30363d;
+            border-radius: 12px;
+            padding: 4px 10px;
+            font-size: 12px;
+            color: #8b949e;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <a href="/">← Voltar ao Leaderboard</a>
+</header>
+
+<div class="container">
+
+    <!-- Card do perfil -->
+    <div class="perfil-card">
+        <h2>{{ trader.nome }}</h2>
+        <div class="metricas">
+    <div class="metrica">
+        <span class="metrica-label">Posição</span>
+        <span class="metrica-valor neutro">#{{ trader.posicao }}</span>
+    </div>
+    <div class="metrica">
+        <span class="metrica-label">Lucro Total</span>
+        <span class="metrica-valor">${{ "{:,.2f}".format(trader.lucro) }}</span>
+    </div>
+    <div class="metrica">
+        <span class="metrica-label">Volume</span>
+        <span class="metrica-valor neutro">${{ "{:,.2f}".format(trader.volume) }}</span>
+    </div>
+    <div class="metrica">
+        <span class="metrica-label">Twitter</span>
+        <span class="metrica-valor neutro">{{ trader.twitter }}</span>
+    </div>
+    {% if metricas %}
+    <div class="metrica">
+        <span class="metrica-label">ROI</span>
+        <span class="metrica-valor {% if metricas.roi >= 0 %}positivo{% else %}negativo{% endif %}">
+            {{ metricas.roi }}%
+        </span>
+    </div>
+    <div class="metrica">
+        <span class="metrica-label">Win Rate</span>
+        <span class="metrica-valor {% if metricas.win_rate >= 50 %}positivo{% else %}negativo{% endif %}">
+            {{ metricas.win_rate }}%
+        </span>
+    </div>
+    <div class="metrica">
+        <span class="metrica-label">Categoria Favorita</span>
+        <span class="metrica-valor neutro">{{ metricas.categoria_favorita }}</span>
+    </div>
+    <div class="metrica">
+        <span class="metrica-label">Posições</span>
+        <span class="metrica-valor neutro">
+            {{ metricas.posicoes_lucrativas }}/{{ metricas.total_posicoes }}
+        </span>
+    </div>
+    {% endif %}
+</div>
+
+    <!-- Posições abertas -->
+    <h3>Posições Abertas ({{ posicoes|length }})</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Mercado</th>
+                <th>Categoria</th>
+                <th>Aposta</th>
+                <th>Preço Médio</th>
+                <th>PnL</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for p in posicoes %}
+            <tr>
+                <td>{{ p.title }}</td>
+                <td><span class="tag">{{ p.categoria }}</span></td>
+                <td>{{ p.outcome }}</td>
+                <td>{{ "%.0f"|format(p.avgPrice * 100) }}%</td>
+                <td class="{% if p.cashPnl >= 0 %}positivo{% else %}negativo{% endif %}">
+                    ${{ "{:,.2f}".format(p.cashPnl) }}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+</body>
+</html>
